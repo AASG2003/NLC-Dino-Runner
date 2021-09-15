@@ -1,6 +1,9 @@
 import pygame
 from nlc_dino_runner.components.dinosaur import Dinosaur
-from nlc_dino_runner.utils.constants import TITLE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, BG, FPS
+from nlc_dino_runner.components.obstacles.obstaclesManager import ObstaclesManager
+from nlc_dino_runner.utils.constants import TITLE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, BG, FPS, SMALL_CACTUS, \
+    LARGE_CACTUS
+
 
 
 class Game:
@@ -15,6 +18,9 @@ class Game:
         self.y_pos_bg = 360
         self.game_speed = 20
         self.player = Dinosaur()
+        # self.cactusSmall = Cactus(SMALL_CACTUS)
+        # self.cactusLarge = Cactus(LARGE_CACTUS)
+        self.obstacles_manager = ObstaclesManager()
 
     def run(self):
         self.playing = True
@@ -32,12 +38,14 @@ class Game:
     def update(self):
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
+        self.obstacles_manager.update(self)
 
     def draw(self):
         self.clock.tick(FPS)
         self.screen.fill((255, 255, 255))
         self.draw_background()
         self.player.draw(self.screen)
+        self.obstacles_manager.draw(self.screen)
         pygame.display.update()
         pygame.display.flip()
 
@@ -51,4 +59,3 @@ class Game:
             self.screen.blit(BG, (self.x_pos_bg + image_width, self.y_pos_bg))
             self.x_pos_bg = 0
         self.x_pos_bg -= self.game_speed
-
