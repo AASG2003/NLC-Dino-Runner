@@ -2,7 +2,7 @@ import pygame
 from nlc_dino_runner.components.dinosaur import Dinosaur
 from nlc_dino_runner.utils import text_utils
 from nlc_dino_runner.components.obstacles.obstaclesManager import ObstaclesManager
-from nlc_dino_runner.utils.constants import TITLE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, BG, FPS, ICON
+from nlc_dino_runner.utils.constants import TITLE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, BG, FPS
 from nlc_dino_runner.utils.scoreManager import ScoreManager
 
 
@@ -21,21 +21,20 @@ class Game:
         self.obstacles_manager = ObstaclesManager()
         self.running = True
         self.score_manager = ScoreManager()
-        self.death_count = 0
-        self.points = 0
-        self.max_points = 0
+        # self.death_count = 0
+        # self.points = 0
+        # self.max_points = 0
         # self.cactusSmall = Cactus(SMALL_CACTUS)
         # self.cactusLarge = Cactus(LARGE_CACTUS)
 
     def run(self):
         self.playing = True
         self.obstacles_manager.reset_obstacles()
-        self.points = 0
         while self.playing:
             self.event()
             self.update()
             self.draw()
-        self.max_points = max(self.max_points, self.points)
+        self.score_manager.update_at_the_end()
 
     def event(self):
         for event in pygame.event.get():
@@ -46,23 +45,26 @@ class Game:
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
         self.obstacles_manager.update(self)
+        self.score_manager.update_points()
+        self.score_manager.new_game_speed(self)
 
     def draw(self):
         self.clock.tick(FPS)
         self.screen.fill((255, 255, 255))
-        self.score() #las imagenes se sobreponen segun el momento de impresion
+        # self.score() #las imagenes se sobreponen segun el momento de impresion
+        self.score_manager.score(self.screen)
         self.draw_background()
         self.player.draw(self.screen)
         self.obstacles_manager.draw(self.screen)
         pygame.display.update()
         pygame.display.flip()
 
-    def score(self):
-        self.points += 1
-        if self.points % 100 == 0:
-            self.game_speed += 1
-        score_element, score_element_rect = text_utils.get_score_element(self.points)
-        self.screen.blit(score_element, score_element_rect)
+    # def score(self):
+    #     self.points += 1
+    #     if self.points % 100 == 0:
+    #         self.game_speed += 1
+    #     score_element, score_element_rect = text_utils.get_score_element(self.points)
+    #     self.screen.blit(score_element, score_element_rect)
 
     def draw_background(self):
         image_width = BG.get_width()
@@ -85,8 +87,7 @@ class Game:
 
         white_color = (255, 255, 255)
         self.screen.fill(white_color)
-
-        #mostrar el menu
+        # mostrar el menu
         self.print_menu_elements()
 
         pygame.display.update()
@@ -105,18 +106,18 @@ class Game:
                 self.run()
 
     def print_menu_elements(self):
-        half_screen_height = SCREEN_HEIGHT // 2
+        if self.score_manager.death_count == 0:
+            self.first_menu()
+        else:
+            self.second_menu()
 
+    def first_menu(self):
+        half_screen_height = SCREEN_HEIGHT // 2
+        self.screen.blit(ICON, ((SCREEN_WIDTH // 2) - 40, half_screen_height - 150))
         text, text_rect = text_utils.get_centered_message("Press any Key to Start")
         self.screen.blit(text, text_rect)
 
-        death_score, death_score_rect = text_utils.get_centered_message("Death count: " + str(self.death_count),
-                                                                        height=half_screen_height + 50)
-        self.screen.blit(death_score, death_score_rect)
-
-        self.screen.blit(ICON, ((SCREEN_WIDTH // 2) - 40, half_screen_height - 150))
-
-        max_points, max_points_rect = text_utils.get_centered_message("Max Points: " + str(self.max_points),
-                                                                      height=half_screen_height + 100)
-        self.screen.blit(max_points, max_points_rect)
-
+    def second_menu(self):
+        text, text_rect = text_utils.get_centered_message("Press any Key to ReStart")
+        self.screen.blit(text, text_rect)
+        self.score_manager.draw_points(self.screen)

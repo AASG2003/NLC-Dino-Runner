@@ -1,5 +1,4 @@
 from nlc_dino_runner.components.obstacles.obstacles import Obstacles
-from nlc_dino_runner.utils.constants import SMALL_CACTUS, LARGE_CACTUS
 import random
 
 
