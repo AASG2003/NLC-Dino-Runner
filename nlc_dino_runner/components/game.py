@@ -1,5 +1,6 @@
 import pygame
 from nlc_dino_runner.components.dinosaur import Dinosaur
+from nlc_dino_runner.components.powerups.power_up_manager import PowerUpManager
 from nlc_dino_runner.utils import text_utils
 from nlc_dino_runner.components.obstacles.obstaclesManager import ObstaclesManager
 from nlc_dino_runner.utils.constants import TITLE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, BG, FPS
@@ -21,6 +22,7 @@ class Game:
         self.obstacles_manager = ObstaclesManager()
         self.running = True
         self.score_manager = ScoreManager()
+        self.power_up_manager = PowerUpManager()
         # self.death_count = 0
         # self.points = 0
         # self.max_points = 0
@@ -30,6 +32,7 @@ class Game:
     def run(self):
         self.playing = True
         self.obstacles_manager.reset_obstacles()
+        self.power_up_manager.reset_power_ups(self.score_manager.points)
         while self.playing:
             self.event()
             self.update()
@@ -45,6 +48,7 @@ class Game:
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
         self.obstacles_manager.update(self)
+        self.power_up_manager.update(self.score_manager.points, self.game_speed, self.player)
         self.score_manager.update_points()
         self.score_manager.new_game_speed(self)
 
@@ -56,6 +60,7 @@ class Game:
         self.draw_background()
         self.player.draw(self.screen)
         self.obstacles_manager.draw(self.screen)
+        self.power_up_manager.draw(self.screen)
         pygame.display.update()
         pygame.display.flip()
 
@@ -65,6 +70,7 @@ class Game:
     #         self.game_speed += 1
     #     score_element, score_element_rect = text_utils.get_score_element(self.points)
     #     self.screen.blit(score_element, score_element_rect)
+
 
     def draw_background(self):
         image_width = BG.get_width()
@@ -106,14 +112,14 @@ class Game:
                 self.run()
 
     def print_menu_elements(self):
+        half_screen_height = SCREEN_HEIGHT // 2
+        self.screen.blit(ICON, ((SCREEN_WIDTH // 2) - 40, half_screen_height - 150))
         if self.score_manager.death_count == 0:
             self.first_menu()
         else:
             self.second_menu()
 
     def first_menu(self):
-        half_screen_height = SCREEN_HEIGHT // 2
-        self.screen.blit(ICON, ((SCREEN_WIDTH // 2) - 40, half_screen_height - 150))
         text, text_rect = text_utils.get_centered_message("Press any Key to Start")
         self.screen.blit(text, text_rect)
 
