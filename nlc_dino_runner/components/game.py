@@ -31,6 +31,7 @@ class Game:
         self.playing = True
         self.obstacles_manager.reset_obstacles()
         self.power_up_manager.reset_power_ups(self.score_manager.points)
+        self.game_speed = 20
         while self.playing:
             self.event()
             self.update()

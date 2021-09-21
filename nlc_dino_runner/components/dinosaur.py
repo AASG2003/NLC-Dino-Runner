@@ -14,7 +14,7 @@ from nlc_dino_runner.utils.constants import (
 
 class Dinosaur(Sprite):
     X_POS = 80
-    Y_POS = 310
+    Y_POS = 300
     Y_POS_DUCK = 340
     JUMP_VEL = 8
 
@@ -88,7 +88,7 @@ class Dinosaur(Sprite):
     def jump(self):
         self.image = self.jump_img[self.type]
         if self.dino_jump:
-            self.dino_rect.y -= self.jump_vel * 5
+            self.dino_rect.y -= self.jump_vel * 4
             self.jump_vel -= 1
 
         if self.jump_vel < -self.JUMP_VEL:
