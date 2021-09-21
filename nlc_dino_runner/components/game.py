@@ -55,7 +55,7 @@ class Game:
         self.clock.tick(FPS)
         self.screen.fill((255, 255, 255))
         # self.score() #las imagenes se sobreponen segun el momento de impresion
-        self.score_manager.score(self.screen)
+        self.score_manager.score(self.screen, self.player)
         self.draw_background()
         self.player.draw(self.screen)
         self.obstacles_manager.draw(self.screen)

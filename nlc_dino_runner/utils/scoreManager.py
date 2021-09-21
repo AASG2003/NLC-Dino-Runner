@@ -32,7 +32,8 @@ class ScoreManager:
                                                                       height=half_screen_height + 150)
         screen.blit(last_score, last_score_rect)
 
-    def score(self, screen):
+    def score(self, screen, player):
+        player.check_invincibility(screen)
         score_element, score_element_rect = text_utils.get_score_element(self.points)
         screen.blit(score_element, score_element_rect)
 
