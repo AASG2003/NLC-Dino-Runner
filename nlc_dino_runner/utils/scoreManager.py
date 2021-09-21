@@ -33,7 +33,6 @@ class ScoreManager:
         screen.blit(last_score, last_score_rect)
 
     def score(self, screen):
-        self.points += 1
         score_element, score_element_rect = text_utils.get_score_element(self.points)
         screen.blit(score_element, score_element_rect)
 

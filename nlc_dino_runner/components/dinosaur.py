@@ -102,6 +102,5 @@ class Dinosaur(Sprite):
     #         if time_to_show > 0:
     #             self.show_text
 
-
     def draw(self, screen):
         screen.blit(self.image, (self.dino_rect.x, self.dino_rect.y))

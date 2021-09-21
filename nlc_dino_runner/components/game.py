@@ -26,8 +26,6 @@ class Game:
         # self.death_count = 0
         # self.points = 0
         # self.max_points = 0
-        # self.cactusSmall = Cactus(SMALL_CACTUS)
-        # self.cactusLarge = Cactus(LARGE_CACTUS)
 
     def run(self):
         self.playing = True
@@ -70,7 +68,6 @@ class Game:
     #         self.game_speed += 1
     #     score_element, score_element_rect = text_utils.get_score_element(self.points)
     #     self.screen.blit(score_element, score_element_rect)
-
 
     def draw_background(self):
         image_width = BG.get_width()
