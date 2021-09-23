@@ -32,7 +32,7 @@ class Game:
     def run(self):
         self.playing = True
         self.obstacles_manager.reset_obstacles()
-        self.power_up_manager.reset_power_ups(self.score_manager.points)
+        self.power_up_manager.reset_power_ups(self.score_manager.points, self.player)
         self.game_speed = 20
         self.life_manager.refull_lives()
         while self.playing:

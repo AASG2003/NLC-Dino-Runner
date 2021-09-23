@@ -8,7 +8,11 @@ from nlc_dino_runner.utils.constants import (
     SHIELD_TYPE,
     RUNNING_SHIELD,
     JUMPING_SHIELD,
-    DUCKING_SHIELD
+    DUCKING_SHIELD,
+    RUNNING_HAMMER,
+    JUMPING_HAMMER,
+    DUCKING_HAMMER,
+    HAMMER_TYPE
 )
 from nlc_dino_runner.utils.text_utils import get_centered_message
 
@@ -22,15 +26,19 @@ class Dinosaur(Sprite):
     def __init__(self):
         self.run_img = {
             DEFAULT_TYPE: RUNNING,
-            SHIELD_TYPE: RUNNING_SHIELD
+            SHIELD_TYPE: RUNNING_SHIELD,
+            HAMMER_TYPE: RUNNING_HAMMER
         }
         self.jump_img = {
             DEFAULT_TYPE: JUMPING,
-            SHIELD_TYPE: JUMPING_SHIELD
+            SHIELD_TYPE: JUMPING_SHIELD,
+            HAMMER_TYPE: JUMPING_HAMMER
+
         }
         self.duck_img = {
             DEFAULT_TYPE: DUCKING,
-            SHIELD_TYPE: DUCKING_SHIELD
+            SHIELD_TYPE: DUCKING_SHIELD,
+            HAMMER_TYPE: DUCKING_HAMMER
         }
         self.type = DEFAULT_TYPE
         self.image = self.run_img[self.type][0]
@@ -38,6 +46,8 @@ class Dinosaur(Sprite):
         self.shield = False
         self.shield_time_up = 0
         self.show_text = False
+
+        self.hammer = False
 
         self.dino_rect = self.image.get_rect()
         self.dino_rect.x = self.X_POS
