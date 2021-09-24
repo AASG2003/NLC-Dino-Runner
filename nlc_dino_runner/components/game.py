@@ -1,10 +1,12 @@
 import pygame
+import random
 from nlc_dino_runner.components.dinosaur import Dinosaur
 from nlc_dino_runner.components.life.life_manager import LifeManager
 from nlc_dino_runner.components.powerups.power_up_manager import PowerUpManager
 from nlc_dino_runner.utils import text_utils
 from nlc_dino_runner.components.obstacles.obstaclesManager import ObstaclesManager
-from nlc_dino_runner.utils.constants import TITLE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, BG, FPS
+from nlc_dino_runner.utils.constants import TITLE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, BG, FPS, GAME_OVER, DARK_MODE, \
+    NORMAL_MODE, CLOUD
 from nlc_dino_runner.utils.scoreManager import ScoreManager
 
 
@@ -13,6 +15,16 @@ class Game:
         pygame.init()
         pygame.display.set_caption(TITLE)
         pygame.display.set_icon(ICON)
+        self.separation = random.randint(350, 450)
+        self.x_pos_cloud1 = 0 + self.separation
+        self.x_pos_cloud2 = 0 + self.separation * 2
+        self.x_pos_cloud3 = 0 + self.separation * 3
+        self.x_pos_cloud4 = 0 + self.separation * 4
+        self.y_pos_cloud1 = random.randint(100, 250)
+        self.y_pos_cloud2 = random.randint(100, 250)
+        self.y_pos_cloud3 = random.randint(100, 250)
+        self.y_pos_cloud4 = random.randint(100, 250)
+        self.separation = 250
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.playing = False
@@ -56,7 +68,7 @@ class Game:
 
     def draw(self):
         self.clock.tick(FPS)
-        self.screen.fill((255, 255, 255))
+        self.screen.fill(NORMAL_MODE)
         # self.score() #las imagenes se sobreponen segun el momento de impresion
         self.score_manager.score(self.screen, self.player)
         self.draw_background()
@@ -84,6 +96,29 @@ class Game:
             self.screen.blit(BG, (self.x_pos_bg + image_width, self.y_pos_bg))
             self.x_pos_bg = 0
         self.x_pos_bg -= self.game_speed
+        self.draw_clouds()
+
+    def draw_clouds(self):  # drawing the clouds
+        self.screen.blit(CLOUD, (self.x_pos_cloud1, self.y_pos_cloud1))
+        self.screen.blit(CLOUD, (self.x_pos_cloud2, self.y_pos_cloud2))
+        self.screen.blit(CLOUD, (self.x_pos_cloud3, self.y_pos_cloud3))
+        self.screen.blit(CLOUD, (self.x_pos_cloud4, self.y_pos_cloud4))
+        self.x_pos_cloud1 -= self.game_speed // 2
+        self.x_pos_cloud2 -= self.game_speed // 2
+        self.x_pos_cloud3 -= self.game_speed // 2
+        self.x_pos_cloud4 -= self.game_speed // 2
+        if self.x_pos_cloud1 <= -SCREEN_WIDTH // 4:
+            self.x_pos_cloud1 = SCREEN_WIDTH
+            self.y_pos_cloud1 = random.randint(100, 250)
+        if self.x_pos_cloud2 <= -SCREEN_WIDTH // 4:
+            self.x_pos_cloud2 = SCREEN_WIDTH
+            self.y_pos_cloud2 = random.randint(100, 250)
+        if self.x_pos_cloud3 <= -SCREEN_WIDTH // 4:
+            self.x_pos_cloud3 = SCREEN_WIDTH
+            self.y_pos_cloud3 = random.randint(100, 250)
+        if self.x_pos_cloud4 <= -SCREEN_WIDTH // 4:
+            self.x_pos_cloud4 = SCREEN_WIDTH
+            self.y_pos_cloud4 = random.randint(100, 250)
 
     def execute(self):
         while self.running:
@@ -129,3 +164,19 @@ class Game:
         text, text_rect = text_utils.get_centered_message("Press any Key to ReStart")
         self.screen.blit(text, text_rect)
         self.score_manager.draw_points(self.screen)
+
+    def death(self):
+        self.clock.tick(FPS)
+        self.screen.fill((255, 255, 255))
+        self.draw_background()
+        self.score_manager.score(self.screen, self.player)
+        self.player.draw(self.screen)
+        self.obstacles_manager.draw(self.screen)
+        self.power_up_manager.draw(self.screen)
+        self.life_manager.draw(self.screen)
+        self.game_over()
+        pygame.display.update()
+        pygame.display.flip()
+
+    def game_over(self):
+        self.screen.blit(GAME_OVER, ((SCREEN_WIDTH // 2) - 180, (SCREEN_HEIGHT // 2) - 180))

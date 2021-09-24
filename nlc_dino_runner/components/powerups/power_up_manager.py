@@ -49,8 +49,9 @@ class PowerUpManager:
 
                 if player.type == HAMMER_TYPE:
                     player.hammer = True
-                    player.hammer_time_up = power_up.start_time + (time_random * 1000)
                     self.hammer.hammers_left = 3
+                    self.hammer.count_hammers = True
+
 
         user_input = pygame.key.get_pressed()
 
@@ -71,4 +72,8 @@ class PowerUpManager:
 
         if self.throwing_hammer:
             self.hammer.draw_hammer(screen)
+
+        if self.hammer.hammers_left > 0:
+            self.hammer.draw_left_hammers(screen)
+
 

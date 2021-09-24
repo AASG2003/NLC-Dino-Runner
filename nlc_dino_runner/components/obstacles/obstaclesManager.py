@@ -3,7 +3,7 @@ import random
 
 from nlc_dino_runner.components.obstacles.bird import Bird
 from nlc_dino_runner.components.obstacles.cactus import Cactus
-from nlc_dino_runner.utils.constants import SMALL_CACTUS, LARGE_CACTUS, BIRD
+from nlc_dino_runner.utils.constants import SMALL_CACTUS, LARGE_CACTUS, BIRD, DINO_DEAD
 
 
 def select_cactus():
@@ -30,20 +30,25 @@ class ObstaclesManager:
         for obstacle in self.obstacles_list:
             obstacle.update(game.game_speed, self.obstacles_list)
             if game.power_up_manager.hammer.rect.colliderect(obstacle.rect):
-                self.obstacles_list.remove(obstacle)
+                if obstacle in self.obstacles_list:
+                    self.obstacles_list.remove(obstacle)
 
             if game.player.dino_rect.colliderect(obstacle.rect):
                 if game.player.shield:
                     self.obstacles_list.remove(obstacle)
                 elif game.life_manager.life_counter() == 1:
-                    pygame.time.delay(500)
                     game.playing = False
+                    game.player.image = DINO_DEAD
                     game.score_manager.death_count += 1
                     game.life_manager.delete_life()
+                    game.death()
+                    game.power_up_manager.hammer.hammers_left = 0
+                    pygame.time.delay(500)
                     break
                 else:
                     game.life_manager.delete_life()
-                    self.obstacles_list.remove(obstacle)
+                    if obstacle in self.obstacles_list:
+                        self.obstacles_list.remove(obstacle)
 
     def draw(self, screen):
         for obstacle in self.obstacles_list:
